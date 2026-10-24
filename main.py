@@ -5,11 +5,11 @@ from flask import Flask
 import threading
 
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
-API_URL = "https://likes-api-lkteam.vercel.app/give_likes"
+API_URL = "https://api-likee.vercel.app/like"
 
 bot = telebot.TeleBot(BOT_TOKEN)
-
 app = Flask(__name__)
+
 @app.route('/')
 def home():
     return "Bot running!"
@@ -27,7 +27,8 @@ def like_cmd(m):
             return
         _, region, uid = parts
         bot.reply_to(m, f"Enviando likes a {uid}...")
-        r = requests.get(f"{API_URL}?region={region}&uid={uid}", timeout=20)
+        # Nueva API usa uid y server_name
+        r = requests.get(f"{API_URL}?uid={uid}&server_name={region}")
         bot.reply_to(m, f"Resultado: {r.text[:1000]}")
     except Exception as e:
         bot.reply_to(m, f"Error: {e}")
