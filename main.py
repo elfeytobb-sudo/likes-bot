@@ -2,11 +2,26 @@ import telebot
 import requests
 import os
 import time
+import threading
+from flask import Flask
 
 TOKEN = os.environ.get("BOT_TOKEN")
 API_URL = "https://api-likeee-two.vercel.app/like"
+
 bot = telebot.TeleBot(TOKEN)
 REGION_FIJA = "NA"
+
+# Servidor web falso para que Render no lo apague
+app = Flask(__name__)
+@app.route('/')
+def home():
+    return "Bot LAN online"
+
+def run_web():
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
+
+threading.Thread(target=run_web, daemon=True).start()
 
 @bot.message_handler(commands=['start'])
 def start(m):
@@ -29,6 +44,6 @@ def like_cmd(m):
 
 print("Borrando webhooks viejos...")
 bot.delete_webhook(drop_pending_updates=True)
-time.sleep(2)
+time.sleep(3)
 print("Bot LAN online")
 bot.infinity_polling(skip_pending=True, timeout=60)
