@@ -5,7 +5,7 @@ from flask import Flask
 import threading
 
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
-API_URL = "https://api-likee.vercel.app/like"
+API_URL = "https://api-likeee-two.vercel.app/like"
 
 bot = telebot.TeleBot(BOT_TOKEN)
 app = Flask(__name__)
