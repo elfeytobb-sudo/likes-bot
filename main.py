@@ -4,7 +4,7 @@ import requests
 from flask import Flask
 import threading
 
-BOT_TOKEN = "8814140528:AAFsZh2yglWei-AQnRwgamwMG_nB_begsYU" 
+BOT_TOKEN = os.environ.get("BOT_TOKEN")
 API_URL = "https://likes-api-lkteam.vercel.app/give_likes"
 
 bot = telebot.TeleBot(BOT_TOKEN)
@@ -16,7 +16,7 @@ def home():
 
 @bot.message_handler(commands=['start'])
 def start(m):
-    bot.reply_to(m, "Hola! Usa /like BR 9729697467")
+    bot.reply_to(m, "Hola! Usa: /like BR 9729697467")
 
 @bot.message_handler(commands=['like'])
 def like_cmd(m):
@@ -39,3 +39,4 @@ threading.Thread(target=run_bot).start()
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 10000)))
+    
