@@ -4,7 +4,7 @@ import requests
 from flask import Flask
 import threading
 
-BOT_TOKEN = "8814140528:AAGA1CvRqWtJbAJD4Gnf-gKYil8AfgCp9FU" 
+BOT_TOKEN = "8814140528:AAFsZh2yglWei-AQnRwgamwMG_nB_begsYU" 
 API_URL = "https://likes-api-lkteam.vercel.app/give_likes"
 
 bot = telebot.TeleBot(BOT_TOKEN)
