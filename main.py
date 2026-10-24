@@ -1,50 +1,41 @@
+import os
 import telebot
 import requests
-import os
 from flask import Flask
-from threading import Thread
+import threading
 
-BOT_TOKEN = "8814140528:AAGA1CvRqWtJbAJD4Gnf-gKYil8AfgCp9FU"
-OWNER_ID = 7961534891
-OWNER_USERNAME = "@recargasjimenez"
+BOT_TOKEN = "8814140528:AAGA1CvRqWtJbAJD4Gnf-gKYil8AfgCp9FU" 
+API_URL = "https://likes-api-lkteam.vercel.app/give_likes"
+
 bot = telebot.TeleBot(BOT_TOKEN)
 
-# --- Mantiene vivo Render ---
-app = Flask('')
+app = Flask(__name__)
 @app.route('/')
 def home():
-    return "Bot de @recargasjimenez Activo!"
+    return "Bot running!"
 
-def run():
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host='0.0.0.0', port=port)
-
-def keep_alive():
-    t = Thread(target=run)
-    t.start()
-
-# --- API de Likes ---
-def call_api(region, uid):
-    url = f"https://free-fire-like-api.vercel.app/like?uid={uid}&server_name={region}"
-    try:
-        r = requests.get(url, timeout=20)
-        return r.json()
-    except Exception as e:
-        return {"error": str(e)}
-
-# --- Comandos ---
 @bot.message_handler(commands=['start'])
 def start(m):
-    bot.reply_to(m, "🔥 Bot de @recargasjimenez Online!\n\nUso:\n/like BR 9729697467\nEjemplo:\n/like BR 1234567890")
+    bot.reply_to(m, "Hola! Usa /like BR 9729697467")
 
 @bot.message_handler(commands=['like'])
 def like_cmd(m):
     try:
         parts = m.text.split()
         if len(parts) < 3:
-            bot.reply_to(m, "Formato: /like REGION ID\nEj: /like BR 9729697467")
+            bot.reply_to(m, "Formato: /like BR 9729697467")
             return
-        region = parts[1].upper()
-        uid = parts[2]
-        
-        bot.reply_to(m, f"⏳ Enviando likes a {uid} en {region}
+        _, region, uid = parts
+        bot.reply_to(m, f"Enviando likes a {uid}...")
+        r = requests.get(f"{API_URL}?region={region}&uid={uid}", timeout=20)
+        bot.reply_to(m, f"Resultado: {r.text[:1000]}")
+    except Exception as e:
+        bot.reply_to(m, f"Error: {e}")
+
+def run_bot():
+    bot.infinity_polling()
+
+threading.Thread(target=run_bot).start()
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 10000)))
